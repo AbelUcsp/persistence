@@ -8,45 +8,43 @@
 #include "DirectedGraph.hpp"
 #include "PartialDirectedGraph.hpp"
 
+
 int main() {
-  // Create a DirectedGraph, a maximum of 5 edged each node and the root with
-  // the starting valuee of 1.
-  ADE::DirectedGraph<int> my_graph(1, 5);
 
-  // We can obtain the root and print their value.
-  ADE::Node<int>* root_ptr = my_graph.get_root_ptr();
-  std::cout << "Root Value: " << *root_ptr->data_ << std::endl;
+    ///se crear la estructura v 0 con p = 1
+    ADE::Persistence::PartialDirectedGraph<int> my_graph(1, 2, 1);
+    ADE::Persistence::PartialNode<int>* root_ptr = my_graph.get_root_ptr();
 
-  // Also, we can insert a new vertex passing the new Node value, a Node
-  // reference and the index of the pointer used from the reference node to
-  // the
-  // inserted node.
-  ADE::Node<int>* inserted_node_ptr = my_graph.insert_vertex(2, root_ptr, 0);
+                                                        /// (value, position-1, version)
+    ADE::Persistence::PartialNode<int>* root_v1 = my_graph.insert_root(10, 0, 1);
+    ADE::Persistence::PartialNode<int>* root_v2 = my_graph.insert_root(100, 0, 2);
 
-  // Likewise, the method to insert a new vertex, returns a reference of the
-  // new
-  // vertex inserted
-  ADE::Node<int>* other_new_node_ptr =
-      my_graph.insert_vertex(3, inserted_node_ptr, 1);
+                                                        /// (value, nodo_actual, position-1)
+    ADE::Persistence::PartialNode<int> *nodo_1_0 =  my_graph.insert_vertex(2, root_v2,    0);
+    ADE::Persistence::PartialNode<int> *nodo_1_1 =  my_graph.insert_vertex(6, root_v2,    1);
+    ADE::Persistence::PartialNode<int> *nodo_2_1 =  my_graph.insert_vertex(3, nodo_1_0,   1);
 
-  // To add an edge between two vertex, we call the function using both Nodes
-  // references and the index pointer that will link the first node to the
-  // second.
-  my_graph.add_edge(other_new_node_ptr, root_ptr, 3);
+                                                        /// (value, nodo_actual, position-1, version)
+    ADE::Persistence::PartialNode<int> *retrived_node3_0 =  my_graph.insert_vertex(37, nodo_2_1,    0, 3);
 
-  // We traverse the Graph from a reference node (using any Node pointer
-  // provided by the previous methods), with the operator []
-  ADE::Node<int> retrived_node = (*root_ptr)[0][1];
-  std::cout << "Node Value: " << *retrived_node.data_ << std::endl;
+    /*** para navegar por una determianda version colocamos el root de la version deseada ******
+    std::cout << "root_1 ->version_nodo "<< *(*root_ptr)[1][1][0].data_ << std::endl;
 
-  // It is also possible to insertt between two Nodes.
-  ADE::Node<int>* between_node_ptr =
-      my_graph.insert_vertex(5, inserted_node_ptr, 1);
-  retrived_node = (*root_ptr)[0][1];
-  std::cout << "Between Value: " << *retrived_node.data_ << std::endl;
+    std::cout << "root_ptr->version_nodo  "<< root_ptr->version_nodo << std::endl;
+    std::cout << "root_v2->version_nodo  "<< root_v2->version_nodo << std::endl;
+    */
 
-  retrived_node = (*root_ptr)[0][1][1];
-  std::cout << "Next Value: " << *retrived_node.data_ << std::endl;
+                                            ///insertar valores TABAL_MOD (value, nodo_origen)
+    ADE::Persistence::PartialNode<int> *INSERT_ = my_graph.insert_value(11, root_v2);
+    ADE::Persistence::PartialNode<int> *INSERT_2 = my_graph.insert_value(22, root_v2);
+    ADE::Persistence::PartialNode<int> *INSERT_3 = my_graph.insert_value(33, root_v2); ///error tabal llena
+
+    ///( my_graph.current_version - 1 )
+    //my_graph.get_root_ptr(2);
+
+    std::cout <<  std::endl << "CURRENT VERSION  "<< my_graph.current_version << std::endl;
+
+
 
   return 0;
 }

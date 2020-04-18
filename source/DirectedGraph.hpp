@@ -38,6 +38,7 @@ class Node {
     return *forward_[id];
   }
 
+
   data_type* data_;
   Node** forward_;
   std::size_t out_ptrs_size_;
@@ -74,6 +75,7 @@ class DirectedGraph {
     Node* new_node = new Node(data, out_ptrs_size_);
     new_node->forward_[position] = next_node_ptr;
     u->forward_[position] = new_node;
+    //u->forward_[position]->back_pointer = nullptr;///
     return dynamic_cast<Node*>(u->forward_[position]);
   }
 
@@ -91,11 +93,13 @@ class DirectedGraph {
     u->forward_[position] = v;
   }
 
- private:
+ //private:
+  protected:
   Node* root_ptr_;
   std::size_t out_ptrs_size_;
 };
 
-}  // namespace ADE
+}
+
 
 #endif  // SOURCE_DIRECTEDGRAPH_HPP_
